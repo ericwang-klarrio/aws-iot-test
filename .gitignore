@@ -1,0 +1,28 @@
+# Compiled source #
+###################
+
+# Packages #
+############
+
+
+# Logs and databases #
+######################
+
+# Key pairs #
+#############
+*.key
+*.pub
+*.pem
+
+# OS generated files #
+######################
+
+
+
+# Project files #
+#################
+*.tfstate
+*.tfstate.backup
+.terraform
+*.bak
+*.retry
