@@ -1,6 +1,6 @@
 # Kafka Connect with MQTT and MongoDB
 
-This is a demo that chain MQTT broker, kafka and MongoDB. It enable user to submit message from MQTT client, the message will be send to Kafka and then stored in MongoDB.
+This is a demo that chain MQTT broker, kafka and MongoDB. It enables user to submit message from MQTT client, the message will be send to Kafka and then stored in MongoDB.
 
 The Kafka use [Kafka Connect MQTT](https://www.confluent.io/connector/kafka-connect-mqtt/) to connect to MQTT broker(Mosquitto), and use [Kafka Connect MongoDB Sink](https://www.confluent.io/connector/kafka-connect-mongodb-sink/) to connect to MongoDB.
 
