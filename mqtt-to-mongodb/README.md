@@ -55,13 +55,13 @@ Then create a collection `MyCollection` in the database `test`.
 Run command below to submit a MQTT message:
 
 ```
-docker run -it --rm --network=aws-iot-test_default --name mqtt-publisher efrecon/mqtt-client pub -h mosquitto  -t "mqtt-topic1" -m "{\"id\":1234,\"message\":\"This is a test\"}"
+docker run -it --rm --network=mqtttomongodb_default --name mqtt-publisher efrecon/mqtt-client pub -h mosquitto  -t "mqtt-topic1" -m "{\"id\":1234,\"message\":\"This is a test\"}"
 ```
 
 Run command below to subscribe the message from Kafka:
 
 ```
-docker run --rm --network=aws-iot-test_default confluentinc/cp-kafka:5.1.0 kafka-console-consumer --bootstrap-server kafka:9092 --topic kafka-topic1 --from-beginning
+docker run --rm --network=mqtttomongodb_default confluentinc/cp-kafka:5.1.0 kafka-console-consumer --bootstrap-server kafka:9092 --topic kafka-topic1 --from-beginning
 ```
 
 Open MongoDB web clinet(http://localhost:3000/) and check whether the data written into the database.
