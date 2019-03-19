@@ -26,3 +26,6 @@
 .terraform
 *.bak
 *.retry
+kafka
+mongo-db
+zookeeper
