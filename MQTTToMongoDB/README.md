@@ -70,3 +70,7 @@ Open MongoDB web clinet(http://localhost:3000/) and check whether the data writt
 ## Note
 
 The format of the message submitted to the MQTT client has to be `json`. Or it might breake the mongo-db sink connector.
+
+
+Reference:
+https://www.baeldung.com/kafka-connect-mqtt-mongodb
