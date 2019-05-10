@@ -26,6 +26,7 @@
 .terraform
 *.bak
 *.retry
+*.jar
 kafka
 mongo-db
 zookeeper

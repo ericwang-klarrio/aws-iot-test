@@ -1,0 +1,33 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.18.0 (06a2e56)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: mongoclient
+  name: mongoclient
+spec:
+  replicas: 1
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: mongoclient
+    spec:
+      containers:
+      - env:
+        - name: MONGO_URL
+          value: mongodb://mongo-db:27017
+        - name: PORT
+          value: "3000"
+        image: mongoclient/mongoclient:2.2.0
+        name: mongoclient
+        ports:
+        - containerPort: 3000
+        resources: {}
+      hostname: mongoclient
+      restartPolicy: Always
+status: {}
