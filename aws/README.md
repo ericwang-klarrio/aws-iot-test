@@ -28,7 +28,7 @@ user@host:~$ source ~/.bashrc
 
 Make sure that the aws cli version is equal or over `1.16.161`.
 
-Run command below on your laptop to update eks config file.
+Run the command below on your laptop to update eks config file.
 
 ```
 user@host:~$ AWS_DEFAULT_REGION=ap-southeast-2 aws eks update-kubeconfig --name test-eks-YtlqUi7K
@@ -52,4 +52,4 @@ You can access the UI at:
 
 http://localhost:8001/api/v1/namespaces/kube-system/services/https:kubernetes-dashboard:/proxy/
 
-Input the token you get above and you are able to login to the Kubernetes UI.
+Input the token you got above and you will be able to login to the Kubernetes UI.
