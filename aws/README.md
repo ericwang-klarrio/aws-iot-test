@@ -26,6 +26,8 @@ user@host:~$ source ~/.bashrc
 
 ### Update eks config
 
+Make sure that the aws cli version is equal or over `1.16.161`.
+
 Run command below on your laptop to update eks config file.
 
 ```
