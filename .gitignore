@@ -30,3 +30,8 @@
 kafka
 mongo-db
 zookeeper
+survey-deployment.yaml
+docker-secret.yaml
+survey-ui-deployment.yaml
+config-map-aws-auth_*
+kubeconfig_*
