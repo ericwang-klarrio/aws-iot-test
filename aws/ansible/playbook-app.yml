@@ -1,0 +1,6 @@
+---
+- name: Setup application
+  hosts: localhost
+  tasks:
+    - import_role:
+        name: apply-app

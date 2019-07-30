@@ -1,0 +1,6 @@
+---
+- name: Setup infrastructures
+  hosts: localhost
+  tasks:
+    - import_role:
+        name: apply-infra

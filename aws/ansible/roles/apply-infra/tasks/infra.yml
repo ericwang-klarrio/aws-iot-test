@@ -1,0 +1,108 @@
+---
+- name: Infra | Render templates
+  template:
+    src: docker-secret.j2
+    dest: "{{ role_path }}/files/infra/docker-secret.yaml"
+
+- name: Infra | Find infra yaml files
+  find:
+    paths: "{{ role_path }}/files/infra"
+    patterns: '*.yaml,*.yml'
+  register: find_result
+
+- name: Infra | infra
+  k8s:
+    state: present
+    resource_definition: "{{ lookup('file', item.path) | from_yaml }}"
+  with_items: "{{find_result.files}}"
+
+- name: Infra | Wait for
+  pause:
+    minutes: 4
+    prompt: "Wait for 4 minutes to make sure all pods are deployed"
+
+- name: Infra | Get a list of all pods from default namespace
+  k8s_facts:
+    kind: Pod
+    namespace: default
+  register: pod_list
+
+- name: Infra | Copy kafka connector jars to the pod
+  shell: kubectl cp "{{ role_path }}/files/jars" default/"{{ item.metadata.name }}":/etc/kafka-connect
+  when:
+    - pod_list.failed == false
+    - item.metadata.name.find("kafka-connect") != -1
+  with_items: "{{ pod_list.resources }}"
+
+
+- name: Infra | Get a list of all pods from default namespace
+  k8s_facts:
+    kind: Pod
+    namespace: default
+  register: pod_list
+
+
+- name: Infra | Reload kafka connector deployment
+  shell: kubectl scale deployment kafka-connect --replicas=0 && sleep 15 && kubectl scale deployment kafka-connect --replicas=1
+  when:
+    - item.metadata.name.find("kafka-connect") != -1
+  with_items: "{{ pod_list.resources }}"
+
+
+- name: Infra | Get kafka connector service
+  k8s_facts:
+    kind: Service
+    namespace: default
+    name: kafka-connect
+  register: kafka_connector_service
+
+
+- name: Infra | Configure mongodb sink connector
+  uri:
+    url: http://{{ item.status.loadBalancer.ingress[0].hostname }}:8083/connectors
+    method: POST
+    body: "{{ lookup('file','conf/connect-mongodb-sink.json') }}"
+    body_format: json
+    headers:
+      Content-Type: "application/json"
+    status_code: 200,201,409
+  when:
+    - kafka_connector_service.failed == false
+    - item.metadata.name.find("kafka-connect") != -1
+  with_items: "{{ kafka_connector_service.resources }}"
+  register: result
+  until: result is succeeded
+  retries: 6
+  delay: 20
+
+
+- name: Infra | Configure mqtt source connector
+  uri:
+    url: http://{{ item.status.loadBalancer.ingress[0].hostname }}:8083/connectors
+    method: POST
+    body: "{{ lookup('file','conf/connect-mqtt-source.json') }}"
+    body_format: json
+    headers:
+      Content-Type: "application/json"
+    status_code: 200,201,409
+  when:
+    - kafka_connector_service.failed == false
+    - item.metadata.name.find("kafka-connect") != -1
+  with_items: "{{ kafka_connector_service.resources }}"
+  register: result
+  until: result is succeeded
+  retries: 6
+  delay: 20
+
+- name: Infra | Get a list of all pods from default namespace
+  k8s_facts:
+    kind: Pod
+    namespace: default
+  register: pod_list
+
+
+- name: Infra | Reload kafka connector deployment
+  shell: kubectl scale deployment kafka-connect --replicas=0 && sleep 15 && kubectl scale deployment kafka-connect --replicas=1
+  when:
+    - item.metadata.name.find("kafka-connect") != -1
+  with_items: "{{ pod_list.resources }}"

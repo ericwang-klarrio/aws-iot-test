@@ -1,0 +1,39 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.18.0 (06a2e56)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: survey
+  name: survey
+  namespace: default
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: survey
+    spec:
+      imagePullSecrets:
+        - name: regcred
+      containers:
+      - env:
+        - name: SURVEY_BROKERS
+          value: kafka-service:9092
+        - name: SURVEY_TOPICS
+          value: well-being-data
+        - name: APPLICATION_SECRET
+          value: {{ survey_application_secret }}
+        image: klarrio-docker.jfrog.io/klarrio/apac-survey:0.0.1-SNAPSHOT
+        name: survey
+        ports:
+        - containerPort: 9000
+        resources: {}
+      hostname: survey
+      restartPolicy: Always
+status: {}

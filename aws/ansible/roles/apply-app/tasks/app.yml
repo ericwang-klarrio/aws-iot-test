@@ -1,0 +1,22 @@
+---
+- name: App | Render survey template
+  template:
+    src: survey-deployment.j2
+    dest: "{{ role_path }}/files/app/survey-deployment.yaml"
+
+- name: App | Render survey UI template
+  template:
+    src: survey-ui-deployment.j2
+    dest: "{{ role_path }}/files/app/survey-ui-deployment.yaml"
+
+- name: App | Find infra yaml files
+  find:
+    paths: "{{ role_path }}/files/app"
+    patterns: '*.yaml,*.yml'
+  register: find_result
+
+- name: App | infra
+  k8s:
+    state: present
+    resource_definition: "{{ lookup('file', item.path) | from_yaml }}"
+  with_items: "{{find_result.files}}"

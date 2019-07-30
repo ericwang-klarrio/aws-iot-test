@@ -1,0 +1,14 @@
+---
+- name: Get a list of all pods from default namespace
+  k8s_facts:
+    kind: Pod
+    namespace: default
+  register: pods_list
+  listen: "restart kafka connector"
+
+- name: Reload kafka connector deployment
+  shell: kubectl scale deployment kafka-connect --replicas=0 && sleep 15 && kubectl scale deployment kafka-connect --replicas=1
+  when:
+    - item.metadata.name.find("kafka-connect") != -1
+  with_items: "{{ pods_list.resources }}"
+  listen: "restart kafka connector"
